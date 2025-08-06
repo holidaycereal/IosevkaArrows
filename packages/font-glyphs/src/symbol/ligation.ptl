@@ -28,11 +28,11 @@ glyph-block Symbol-Ligation : begin
 	# Arrow parameters
 	define arrowheadSlope : 1 / LessSlope
 
-	local arrowExtend : clamp 0 Width (RightSB - 0.5 * OperatorStroke * arrowheadSlope)
-	local arrowJ      : clamp 0 Width (SB + 0.5 * OperatorStroke * arrowheadSlope)
+	local arrowExtend : clamp 0 Width         (RightSB - 0.5 * OperatorStroke * arrowheadSlope)
+	local arrowJ      : clamp 0 Width         (SB      + 0.5 * OperatorStroke * arrowheadSlope)
 
-	local dblExtend : clamp 0 Width (RightSB - EqualHalfSpace * arrowheadSlope)
-	local dblArrowJ : clamp 0 Width (SB + EqualHalfSpace * arrowheadSlope)
+	local dblExtend   : clamp 0 Width (0.75 * (RightSB - 0.5 * OperatorStroke * arrowheadSlope))
+	local dblArrowJ   : clamp 0 Width (1.75 * (SB      + 0.5 * OperatorStroke * arrowheadSlope))
 
 	define [HyphenNotch x] : union
 		VBar.m x (SymbolMid + OperatorStroke / 3) (SymbolMid + OperatorStroke) EqualHoleWidth
@@ -87,8 +87,8 @@ glyph-block Symbol-Ligation : begin
 		define Shapes : object
 			'plus'   { PlusShape   HyphenNotch { arrowExtend arrowheadsKern arrowJ    0 } }
 			'hyphen' { HyphenShape HyphenNotch { arrowExtend arrowheadsKern arrowJ    0 } }
-			'equal'  { EqualShape  EqualHole   { dblExtend   arrowheadsKern dblArrowJ 1 } }
-			'ident'  { IdentShape  IdentHole   { dblExtend   arrowheadsKern dblArrowJ 1 } }
+			'equal'  { EqualShape  EqualHole   { dblExtend   arrowheadsKern dblArrowJ 0 } }
+			'ident'  { IdentShape  IdentHole   { dblExtend   arrowheadsKern dblArrowJ 0 } }
 
 		define NotchConfig : object
 			'withoutNotch' { false }
@@ -161,11 +161,11 @@ glyph-block Symbol-Ligation : begin
 
 	do "Arrowheads"
 		glyph-block-import Symbol-Math-Relation-Common : dH
-		glyph-block-import Symbol-Math-Relation-Inequality : LigationLessShape LigationGreaterShape
+		glyph-block-import Symbol-Math-Relation-Inequality : LessShape GreaterShape
 
 		create-glyph 'less.lig.dblhead' : glyph-proc
 			Joining.set currentGlyph Joining.Classes.Right
-			include : LigationLessShape (SymbolMid + dH) (SymbolMid - dH) SB RightSB OperatorStroke OperatorStroke (2 * EqualHalfSpace)
+			include : LessShape (SymbolMid + dH) (SymbolMid - dH) SB RightSB OperatorStroke
 			create-aliased-glyph 'less.lig.dblhead.mid'
 			create-forked-glyph 'less.lig.dblhead.shift1' : glyph-proc
 				Joining.set currentGlyph Joining.Classes.Mid
@@ -173,7 +173,7 @@ glyph-block Symbol-Ligation : begin
 
 		create-glyph 'greater.lig.dblhead' : glyph-proc
 			Joining.set currentGlyph Joining.Classes.Left
-			include : LigationGreaterShape (SymbolMid + dH) (SymbolMid - dH) SB RightSB OperatorStroke OperatorStroke (2 * EqualHalfSpace)
+			include : GreaterShape (SymbolMid + dH) (SymbolMid - dH) SB RightSB OperatorStroke
 			create-aliased-glyph 'greater.lig.dblhead.mid'
 			create-forked-glyph 'greater.lig.dblhead.shift1' : glyph-proc
 				Joining.set currentGlyph Joining.Classes.Mid
@@ -227,7 +227,8 @@ glyph-block Symbol-Ligation : begin
 			create-forked-glyph 'less.lig.shiftN1h'     : ArrowShiftTranslate   1.5
 			create-forked-glyph 'less.lig.shiftN2'      : ArrowShiftTranslate   2.0
 
-		define [ArrowHeadHole] : Rect (SymbolMid + EqualHalfSpace - 0.5 * OperatorStroke) (SymbolMid - EqualHalfSpace + 0.5 * OperatorStroke) (-Width) (2 * Width)
+		# define [ArrowHeadHole] : Rect (SymbolMid + EqualHalfSpace - 0.5 * OperatorStroke) (SymbolMid - EqualHalfSpace + 0.5 * OperatorStroke) (-Width) (2 * Width)
+		define [ArrowHeadHole] : Rect 0 0 0 0
 
 		create-glyph 'less.lig.hole' : glyph-proc
 			Joining.set currentGlyph Joining.Classes.Left
